@@ -1,46 +1,68 @@
 import tkinter as tk
+from PIL import ImageTk, Image
+import Pages
+
+# Home page 左半边
+
+root = tk.Tk()
+root.title("Eye guard")
+root.geometry('640x400')
+
+# 左边的背景放在画布中
+left_canvas = tk.Canvas(root, width=154, height=404)
+left_canvas.place(x=-2,y=-2)
+
+# 载入图片
+photo = Image.open("Images/left.jpg")
+photo = photo.resize((154, 404), Image.ANTIALIAS)
+left_bg = ImageTk.PhotoImage(photo)
+left_canvas.create_image(0, 0, image=left_bg, anchor='nw')
+
+# 左边按钮栏
+toolBar_frame = tk.Frame(left_canvas,width = 150, height=120)
+toolBar_frame.place(x=0,y=162)
 
 
-def quick_start():
-    print('quick start')
-def customized():
-    print('customized')
+# 加载三个页面
+frame_home = Pages.home_page_show(root)
+frame_setting = Pages.setting_page_show(root)
+frame_history = Pages.history_page_show(root)
+frame_home.lift()
 
 
-window_width = 640
-window_height = 400
-times = 0.25
+# 声明按钮们
+home_button = tk.Button(toolBar_frame, text='Home page', bg='#01FAE7', width = 13, anchor='c',font=14)
+home_button.place(x=0,y=0)
+
+setting_button = tk.Button(toolBar_frame, text='Setting', bg='#2C3D55', width = 13, anchor='c',font=14, fg='#0A8E8B')
+setting_button.place(x=0,y=40)
+
+history_button = tk.Button(toolBar_frame, text='History', bg='#2C3D55', width = 13, anchor='c',font=14, fg='#0A8E8B')
+history_button.place(x=0,y=80)
+
+# 调选中或未选中整颜色的方法
+def button_setting(button, other_button):
+    button.config(fg='black', bg = '#01FAE7')
+    for each in other_button:
+        each.config(fg='#0A8E8B', bg = '#2C3D55')
 
 
-window = tk.Tk()
-window.title("Eye guard")
-window.geometry(''+str(window_width)+'x'+str(window_height))
+# 显示当前选中页面
+def show_page(button, other_button):
+    if button['text'] == 'Home page':
+        frame_home.lift()
+    elif button['text'] == 'Setting':
+        frame_setting.lift()
+    else:
+        frame_history.lift()
+    button_setting(button, other_button)
 
+# 将方法塞进按钮
+home_button.config(command = lambda :show_page(home_button, [setting_button, history_button]))
+setting_button.config(command = lambda :show_page(setting_button,[home_button, history_button]))
+history_button.config(command = lambda :show_page(history_button,[home_button, setting_button]))
 
+# about us
+left_canvas.create_text(7,300, text='About us:\n\nsites.google.com/view/\neye-guard/homepage', anchor = 'nw', fill= '#01FAE7')
 
-frm_up = tk.Frame(window, width=window_width, height = window_height * times, bg='red')
-frm_down = tk.Frame(window, width=window_width, height=window_height * (1-times),bg='green')
-frm_down_right = tk.Frame(frm_down, width= window_width * 0.3, height=window_height * (1-times), bg='yellow')
-
-frm_up.pack()
-frm_down.pack()
-frm_down_right.place(x=0.7*window_width, y=0)
-
-button_quick = tk.Button(frm_down_right, text = 'Quick start', width = 20, command = quick_start)
-button_quick.place(x = window_width * 0.3 * 0.12, y = 0.15 * window_height * (1-times))
-
-button_customized = tk.Button(frm_down_right, text = 'Customized mode', width = 20, command = quick_start)
-button_customized.place(x = window_width * 0.3 * 0.12, y = 0.45 * window_height * (1-times))
-
-button_tbd1 = tk.Button(frm_down_right, text = 'tbd1', width = 20, command = quick_start)
-button_tbd1.place(x = window_width * 0.3 * 0.12, y = 0.75 * window_height * (1-times))
-# frm_down_rim_up
-button_personal_data = tk.Button(frm_up, text = 'Personal data', width=20)
-button_TBD = tk.Button(frm_up, text = 'tbd1', width=20)
-button_TBD2 = tk.Button(frm_up, text = 'tbd2', width=20)
-
-
-button_personal_data.place(x = window_width * 0.04, y = window_height * times * 0.3)
-button_TBD.place(x = window_width * 0.38, y = window_height * times * 0.3)
-button_TBD2.place(x = window_width * 0.72, y = window_height * times * 0.3)
-window.mainloop()
+root.mainloop()
