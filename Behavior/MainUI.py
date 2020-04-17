@@ -12,6 +12,7 @@ def main_ui():
     # Home page 左半边
 
     root = tk.Tk()
+    root.resizable(0,0)
     root.title("Eye guard")
     root.geometry('640x400')
 
@@ -72,4 +73,6 @@ def main_ui():
     # about us
     left_canvas.create_text(7, 300, text='About us:\n\nsites.google.com/view/\neye-guard/homepage', anchor='nw',
                             fill='#01FAE7')
+    frame_home.update()
+
     root.mainloop()

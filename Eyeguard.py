@@ -32,7 +32,7 @@ if __name__ == '__main__':  # 在win系统下必须要满足这个if条件
     setting.init()
     facedetection_t = threading.Thread(target=facedetection_background)
     facedetection_t.start()
-    time.sleep(3)
+    time.sleep(10)
     MainUI.main_ui()
     print("End")
     stop_thread(facedetection_t)

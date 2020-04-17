@@ -137,6 +137,7 @@ def facedetection_background():
     time.sleep(1.0)
 
     while True:
+        print(setting.TOTAL)
         setting.frame = setting.vs.read()
         setting.frame = imutils.resize(setting.frame, width=450)
         gray = cv2.cvtColor(setting.frame, cv2.COLOR_BGR2GRAY)
