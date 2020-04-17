@@ -1,5 +1,4 @@
 from scipy.spatial import distance as dist
-from imutils.video import VideoStream
 import numpy as np
 from imutils import face_utils
 import imutils
@@ -130,14 +129,8 @@ def facedetection_background():
     print("[INFO] loading facial landmark predictor...")
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
-    # grab the indexes of the facial landmarks
-
-    print("[INFO] starting video stream thread...")
-    setting.vs=VideoStream(src=1).start()
-    time.sleep(1.0)
 
     while True:
-        print(setting.TOTAL)
         setting.frame = setting.vs.read()
         setting.frame = imutils.resize(setting.frame, width=450)
         gray = cv2.cvtColor(setting.frame, cv2.COLOR_BGR2GRAY)
@@ -147,5 +140,4 @@ def facedetection_background():
         for rect in rects:
             eye_blinks_count(rect, gray, predictor)
             head_posture(rect, gray, predictor, size)
-
-
+    setting.vs.stop()

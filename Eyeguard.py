@@ -1,6 +1,7 @@
 import sys
 sys.path.append(r'C:\Users\yangy\University of Rochester\CSC412 HCI\FinalProject\EyeGuard\Algorithm')
 sys.path.append(r'C:\Users\yangy\University of Rochester\CSC412 HCI\FinalProject\EyeGuard\Behavior')
+from imutils.video import VideoStream
 import threading
 import time
 import setting
@@ -30,9 +31,27 @@ def stop_thread(thread):
 
 if __name__ == '__main__':  # 在win系统下必须要满足这个if条件
     setting.init()
+    # grab the indexes of the facial landmarks
+
+    print("[INFO] starting video stream thread...")
+    setting.vs=VideoStream(src=1).start()
+    time.sleep(1.0)
+
     facedetection_t = threading.Thread(target=facedetection_background)
     facedetection_t.start()
-    time.sleep(10)
+    time.sleep(3)
     MainUI.main_ui()
-    print("End")
-    stop_thread(facedetection_t)
+    _FINISH = True
+    facedetection_t.join()
+    setting.STATUS_T.join()
+
+    # stop_thread(setting.STATUS_T)
+    # print("[INFO] stop status thread...")
+    # stop_thread(facedetection_t)
+    # print("[INFO] stop video thread...")
+    #
+    # sys.exit(-1)
+    # print("[INFO] Exit")
+
+
+

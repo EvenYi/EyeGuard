@@ -3,14 +3,15 @@ import imutils
 from PIL import ImageTk, Image
 import cv2
 import setting
-
+import threading
 
 def home_page_show(root):
     right_frame = tk.Frame(root, bg='#2C3D55', width=490, height=400)
     right_frame.place(x=150, y=0)
 
-    camera = tk.Frame(right_frame, width=323, height=292, bg='#2C3D55')
+    camera = tk.Frame(right_frame, width=323, height=292, bg = '#2C3D55')
     camera.place(x=10, y=45)
+
 
     # Graphics window
     imageFrame = tk.Frame(camera, width=600, height=500)
@@ -23,7 +24,7 @@ def home_page_show(root):
 
     def show_frame():
         frame = cap.read()
-        frame = imutils.resize(frame, width=310, height=292, )
+        frame = imutils.resize(frame, width=310, height=292,)
         frame = cv2.flip(frame, 1)
         cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
         img = Image.fromarray(cv2image)
@@ -49,15 +50,22 @@ def home_page_show(root):
                             anchor='w')
     label_status.place(x=350, y=0)
 
-    status_label = tk.Label(right_frame, height=15, width=18, bg='white', anchor='nw',text='Blink: ' + str(setting.TOTAL) + '\n')
+    v = tk.StringVar()
+
+    status_label = tk.Label(right_frame, height=15, width=18, bg='white', anchor='nw', textvariable = v)
     status_label.place(x=350, y=45)
+    def updating():
+        while True:
+            v.set(str(setting.TOTAL))
+
+    if setting.STATUS_T == -1:
+        setting.STATUS_T = threading.Thread(target=updating)
+        setting.STATUS_T.start()
 
     start_button = tk.Button(right_frame, width=10, height=2, bg='#01FAE7', text='Start', font=20)
     start_button.place(x=350, y=323)
 
-
     return right_frame
-
 
 def setting_page_show(root):
     right_frame = tk.Frame(root, bg='#2C3D55', width=490, height=400)
@@ -88,7 +96,6 @@ def setting_page_show(root):
     apply_button = tk.Button(right_frame, width=10, height=2, bg='#01FAE7', text='Apply', font=20)
     apply_button.place(x=350, y=323)
     return right_frame
-
 
 def history_page_show(root):
     right_frame = tk.Frame(root, bg='#2C3D55', width=490, height=400)
