@@ -1,12 +1,40 @@
 import tkinter as tk
+import imutils
 from PIL import ImageTk, Image
+import cv2
+import setting
 
 def home_page_show(root):
     right_frame = tk.Frame(root, bg='#2C3D55', width=490, height=400)
     right_frame.place(x=150, y=0)
 
-    camera = tk.Canvas(right_frame, width=323, height=292)
-    camera.place(x=10, y=10)
+    camera = tk.Frame(right_frame, width=323, height=292, bg = '#2C3D55')
+    camera.place(x=10, y=45)
+
+
+    # Graphics window
+    imageFrame = tk.Frame(camera, width=600, height=500)
+    imageFrame.grid(row=0, column=0, padx=10, pady=2)
+
+    # Capture video frames
+    lmain = tk.Label(imageFrame)
+    lmain.grid(row=0, column=0)
+    cap = setting.vs
+
+    def show_frame():
+        frame = cap.read()
+        frame = imutils.resize(frame, width=310, height=292,)
+        frame = cv2.flip(frame, 1)
+        cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+        img = Image.fromarray(cv2image)
+        imgtk = ImageTk.PhotoImage(image=img)
+        lmain.imgtk = imgtk
+        lmain.configure(image=imgtk)
+        lmain.after(10, show_frame)
+
+    # Slider window (slider controls stage position)
+
+    show_frame()  # Display 2
 
     mode = 'Adult'
 
