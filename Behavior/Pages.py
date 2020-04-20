@@ -4,6 +4,12 @@ from PIL import ImageTk, Image
 import cv2
 import setting
 
+def updating(v):
+    while True:
+        v.set(str(setting.TOTAL))
+        if setting.END:
+            break
+
 def home_page_show(root):
     right_frame = tk.Frame(root, bg='#2C3D55', width=490, height=400)
     right_frame.place(x=150, y=0)
@@ -34,6 +40,8 @@ def home_page_show(root):
     # Slider window (slider controls stage position)
 
     show_frame()  # Display 2
+
+
 
     mode = 'Adult'
 
