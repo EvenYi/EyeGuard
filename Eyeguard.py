@@ -37,7 +37,7 @@ def main():
     # grab the indexes of the facial landmarks
 
     print("[INFO] starting video stream thread...")
-    setting.vs = VideoStream(src=1).start()
+    setting.vs = VideoStream(src=0).start()
     time.sleep(1.0)
 
     facedetection_t = threading.Thread(target=facedetection_background, name='Face')

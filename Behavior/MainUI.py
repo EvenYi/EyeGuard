@@ -12,10 +12,13 @@ import inspect
 import ctypes
 import threading
 import time
+import tkinter.messagebox
 
 
-def star_eyeguard():
+
+def star_eyeguard(button):
     print("[INFO]: Start eyeguard.")
+    button.config(text='Stop', command=lambda : stop_eyeguard(button))
     if setting.STATUS_EB == -1:
         setting.STATUS_EB = threading.Thread(target=eyeFatigue_judgment, name='EyeBlinks')
         setting.STATUS_EB.start()
@@ -23,6 +26,9 @@ def star_eyeguard():
         setting.STATUS_HP = threading.Thread(target=head_posture_judgment, name='HeadPosture')
         setting.STATUS_HP.start()
 
+def stop_eyeguard(button):
+    button.config(text = 'Start', command=lambda :star_eyeguard(button))
+    
 
 def eyeFatigue_judgment():
     while True:
@@ -33,7 +39,11 @@ def eyeFatigue_judgment():
             print("[INFO]: Current eye blinks: " + str(point_2 - point_1))
             if (point_2 - point_1) < 10:
                 print("[INFO] Your eyes is fatigue")
-                # playaudio()
+                if setting.IF_POP == '1':
+                    tkinter.messagebox.showinfo('Eyeguard', 'You are tired. Go have some rests!')
+                if setting.IF_MUSIC == '1':
+                    playaudio()
+
         else:
             break
 
@@ -42,6 +52,7 @@ def head_posture_judgment():
     while True:
         if setting.STATUS_HP_END != True:
             time.sleep(60.0)
+            tkinter.messagebox.showinfo('Eyeguard', 'You are close. Go have some rests!')
             print("[INFO] Head posture: " + setting.HP_CODE)
         else:
             break
@@ -107,8 +118,10 @@ def main_ui():
         setting.STATUS_T = threading.Thread(target=updating, name='Status')
         setting.STATUS_T.start()
 
-    start_button = tk.Button(frame_home, width=10, height=2, bg='#01FAE7', text='Start', font=20, command=star_eyeguard)
+
+    start_button = tk.Button(frame_home, width=10, height=2, bg='#01FAE7', text='Start', font=20, command=lambda :star_eyeguard(start_button))
     start_button.place(x=350, y=323)
+
 
     # 调选中或未选中整颜色的方法
     def button_setting(button, other_button):

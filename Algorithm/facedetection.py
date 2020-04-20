@@ -6,6 +6,7 @@ import time
 import dlib
 import cv2
 import setting
+import tkinter.messagebox
 
 
 # define two constants, one for the eye aspect ratio to indicate
@@ -120,6 +121,7 @@ def head_posture(rect, gray, predictor, size):
         setting.HP_CODE = "Too far to the screen"
     elif setting.translation_vector[1][0] < 0:
         setting.HP_CODE = "Please face the screen"
+
 
 
 

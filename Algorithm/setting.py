@@ -12,7 +12,11 @@ def init():
     global STATUS_EB_END
     global STATUS_HP
     global STATUS_HP_END
-
+    global MUSIC_TYPE
+    global IF_MUSIC
+    global IF_POP
+    
+    
     HP_CODE = " "
     END = False
     STATUS_HP_END = False
@@ -22,3 +26,9 @@ def init():
     STATUS_EB = -1
     COUNTER = 0
     TOTAL = 0
+    f = open('settings.txt', 'r')
+    settings = f.read().split()
+    IF_POP = settings[0]
+    IF_MUSIC = settings[1]
+    MUSIC_TYPE = settings[2]
+    

@@ -61,8 +61,10 @@ def setting_page_show(root):
     right_frame = tk.Frame(root, bg='#2C3D55', width=490, height=400)
     right_frame.place(x=150, y=0)
 
+    pop_var = tk.IntVar()
+    pop_var.set(1)
     mode_check_button = tk.Checkbutton(right_frame, text='Alert mode', bg='#2C3D55', fg='#01FAE7',
-                                       activebackground='#2C3D55', font=20)
+                                       activebackground='#2C3D55', font=20, var = pop_var)
     mode_check_button.place(x=13, y=40)
 
     mode_list = ['TBD1', 'TBD2', 'TBD3']
@@ -72,18 +74,26 @@ def setting_page_show(root):
                                       activebackground='#2C3D55', font=20)
         radio_button.place(x=20 + i * 150, y=130)
 
+    music_var = tk.IntVar()
+    music_var.set(0)
     music_check_button = tk.Checkbutton(right_frame, text='Music mode', bg='#2C3D55', fg='#01FAE7',
-                                        activebackground='#2C3D55', font=20)
+                                        activebackground='#2C3D55', font=20, var = music_var)
     music_check_button.place(x=13, y=200)
 
     music_list = ['Pop music', 'Natural', 'Classic']
 
+    type = tk.StringVar()
     for i in range(len(music_list)):
         radio_button = tk.Radiobutton(right_frame, text=music_list[i], bg='#2C3D55', fg='#01FAE7',
-                                      activebackground='#2C3D55', font=20)
+                                      activebackground='#2C3D55', font=20, variable = type, value=music_list[i])
         radio_button.place(x=20 + i * 150, y=260)
-
-    apply_button = tk.Button(right_frame, width=10, height=2, bg='#01FAE7', text='Apply', font=20)
+    
+    def apply():
+        f = open('settings.txt','w')
+        f.write(str(pop_var.get())+' '+str(music_var.get())+' '+type.get())
+        
+    
+    apply_button = tk.Button(right_frame, width=10, height=2, bg='#01FAE7', text='Apply', font=20, command = apply)
     apply_button.place(x=350, y=323)
     return right_frame
 
