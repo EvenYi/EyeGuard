@@ -3,7 +3,6 @@ import imutils
 from PIL import ImageTk, Image
 import cv2
 import setting
-import threading
 
 def home_page_show(root):
     right_frame = tk.Frame(root, bg='#2C3D55', width=490, height=400)
@@ -20,10 +19,9 @@ def home_page_show(root):
     # Capture video frames
     lmain = tk.Label(imageFrame)
     lmain.grid(row=0, column=0)
-    cap = setting.vs
 
     def show_frame():
-        frame = cap.read()
+        frame = setting.vs.read()
         frame = imutils.resize(frame, width=310, height=292,)
         frame = cv2.flip(frame, 1)
         cv2image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
@@ -49,22 +47,6 @@ def home_page_show(root):
     label_status = tk.Label(right_frame, height=1, width=20, text='Current status', fg='#01FAE7', bg='#2C3D55', font=14,
                             anchor='w')
     label_status.place(x=350, y=0)
-
-    v = tk.StringVar()
-
-    status_label = tk.Label(right_frame, height=15, width=18, bg='white', anchor='nw', textvariable = v)
-    status_label.place(x=350, y=45)
-    def updating():
-        while True:
-            v.set(str(setting.TOTAL))
-
-    if setting.STATUS_T == -1:
-        setting.STATUS_T = threading.Thread(target=updating)
-        setting.STATUS_T.start()
-
-    start_button = tk.Button(right_frame, width=10, height=2, bg='#01FAE7', text='Start', font=20)
-    start_button.place(x=350, y=323)
-
     return right_frame
 
 def setting_page_show(root):

@@ -1,6 +1,6 @@
 import sys
-sys.path.append(r'C:\Users\yangy\University of Rochester\CSC412 HCI\FinalProject\EyeGuard\Algorithm')
-sys.path.append(r'C:\Users\yangy\University of Rochester\CSC412 HCI\FinalProject\EyeGuard\Behavior')
+sys.path.append(r'.\Algorithm')
+sys.path.append(r'.\Behavior')
 from imutils.video import VideoStream
 import threading
 import time
@@ -40,18 +40,14 @@ if __name__ == '__main__':  # 在win系统下必须要满足这个if条件
     facedetection_t = threading.Thread(target=facedetection_background)
     facedetection_t.start()
     time.sleep(3)
-    MainUI.main_ui()
-    _FINISH = True
-    facedetection_t.join()
-    setting.STATUS_T.join()
 
-    # stop_thread(setting.STATUS_T)
-    # print("[INFO] stop status thread...")
-    # stop_thread(facedetection_t)
-    # print("[INFO] stop video thread...")
-    #
-    # sys.exit(-1)
-    # print("[INFO] Exit")
+    MainUI.main_ui()
+
+    stop_thread(facedetection_t)
+    print("[INFO] stop video thread...")
+    print("[INFO] Exit")
+    sys.exit(1)
+
 
 
 

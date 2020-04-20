@@ -1,18 +1,39 @@
 import sys
-sys.path.append(r'C:\Users\yangy\University of Rochester\CSC412 HCI\FinalProject\EyeGuard\Algorithm')
+
+sys.path.append(r'..\Algorithm')
 import tkinter as tk
 from PIL import ImageTk, Image
 import Pages
 import setting
-import cv2
-import imutils
+import inspect
+import ctypes
+import threading
+
+
+def _async_raise(tid, exctype):
+    """raises the exception, performs cleanup if needed"""
+    tid = ctypes.c_long(tid)
+    if not inspect.isclass(exctype):
+        exctype = type(exctype)
+    res = ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, ctypes.py_object(exctype))
+    if res == 0:
+        raise ValueError("invalid thread id")
+    elif res != 1:
+        # """if it returns a number greater than one, you're in trouble,
+        # and you should call it again with exc=NULL to revert the effect"""
+        ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, None)
+        raise SystemError("PyThreadState_SetAsyncExc failed")
+
+
+def stop_thread(thread):
+    _async_raise(thread.ident, SystemExit)
 
 
 def main_ui():
     # Home page 左半边
 
     root = tk.Tk()
-    root.resizable(0,0)
+    root.resizable(0, 0)
     root.title("Eye guard")
     root.geometry('640x400')
 
@@ -34,7 +55,22 @@ def main_ui():
     frame_home = Pages.home_page_show(root)
     frame_setting = Pages.setting_page_show(root)
     frame_history = Pages.history_page_show(root)
-    frame_home.lift()
+
+    v = tk.StringVar()
+
+    status_label = tk.Label(frame_home, height=15, width=18, bg='white', anchor='nw', textvariable=v)
+    status_label.place(x=350, y=45)
+
+    def updating():
+        while True:
+            v.set(str(setting.TOTAL))
+
+    if setting.STATUS_T == -1:
+        setting.STATUS_T = threading.Thread(target=updating)
+        setting.STATUS_T.start()
+
+    start_button = tk.Button(frame_home, width=10, height=2, bg='#01FAE7', text='Start', font=20)
+    start_button.place(x=350, y=323)
 
     # 调选中或未选中整颜色的方法
     def button_setting(button, other_button):
@@ -46,6 +82,7 @@ def main_ui():
     def show_page(button, other_button):
         if button['text'] == 'Home page':
             frame_home.lift()
+            frame_home.update()
         elif button['text'] == 'Setting':
             frame_setting.lift()
         else:
@@ -53,7 +90,7 @@ def main_ui():
         button_setting(button, other_button)
 
     # 声明按钮们
-    home_button = tk.Button(toolBar_frame, text='Home page', bg='#01FAE7', width=13, anchor='c', font=14)
+    home_button = tk.Button(toolBar_frame, text='Home page', bg='#2C3D55', width=13, anchor='c', font=14, fg='#0A8E8B')
     home_button.place(x=0, y=0)
 
     setting_button = tk.Button(toolBar_frame, text='Setting', bg='#2C3D55', width=13, anchor='c', font=14, fg='#0A8E8B')
@@ -73,6 +110,13 @@ def main_ui():
     # about us
     left_canvas.create_text(7, 300, text='About us:\n\nsites.google.com/view/\neye-guard/homepage', anchor='nw',
                             fill='#01FAE7')
+    frame_home.lift()
     frame_home.update()
 
+    def close_app():
+        stop_thread(setting.STATUS_T)
+        print("[INFO] stop status thread...")
+        root.destroy()
+
+    root.protocol('WM_DELETE_WINDOW', close_app)
     root.mainloop()
