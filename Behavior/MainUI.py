@@ -1,13 +1,50 @@
 import sys
 
 sys.path.append(r'..\Algorithm')
+sys.path.append(r'..\OperatingSystem')
+
 import tkinter as tk
 from PIL import ImageTk, Image
+from audio import playaudio
 import Pages
 import setting
 import inspect
 import ctypes
 import threading
+import time
+
+
+def star_eyeguard():
+    print("[INFO]: Start eyeguard.")
+    if setting.STATUS_EB == -1:
+        setting.STATUS_EB = threading.Thread(target=eyeFatigue_judgment, name='EyeBlinks')
+        setting.STATUS_EB.start()
+    if setting.STATUS_HP == -1:
+        setting.STATUS_HP = threading.Thread(target=head_posture_judgment, name='HeadPosture')
+        setting.STATUS_HP.start()
+
+
+def eyeFatigue_judgment():
+    while True:
+        if setting.STATUS_EB_END != True:
+            point_1 = setting.TOTAL
+            time.sleep(32.0)
+            point_2 = setting.TOTAL
+            print("[INFO]: Current eye blinks: " + str(point_2 - point_1))
+            if (point_2 - point_1) < 10:
+                print("[INFO] Your eyes is fatigue")
+                # playaudio()
+        else:
+            break
+
+
+def head_posture_judgment():
+    while True:
+        if setting.STATUS_HP_END != True:
+            time.sleep(60.0)
+            print("[INFO] Head posture: " + setting.HP_CODE)
+        else:
+            break
 
 
 def _async_raise(tid, exctype):
@@ -57,19 +94,20 @@ def main_ui():
     frame_history = Pages.history_page_show(root)
 
     v = tk.StringVar()
-
     status_label = tk.Label(frame_home, height=15, width=18, bg='white', anchor='nw', textvariable=v)
     status_label.place(x=350, y=45)
 
     def updating():
         while True:
-            v.set(str(setting.TOTAL))
+            v.set("Total Eye Blins: \n " + str(setting.TOTAL) + " \n " + "Head Posture: \n" + str(setting.HP_CODE))
+            if setting.END:
+                break
 
     if setting.STATUS_T == -1:
-        setting.STATUS_T = threading.Thread(target=updating)
+        setting.STATUS_T = threading.Thread(target=updating, name='Status')
         setting.STATUS_T.start()
 
-    start_button = tk.Button(frame_home, width=10, height=2, bg='#01FAE7', text='Start', font=20)
+    start_button = tk.Button(frame_home, width=10, height=2, bg='#01FAE7', text='Start', font=20, command=star_eyeguard)
     start_button.place(x=350, y=323)
 
     # 调选中或未选中整颜色的方法
@@ -82,15 +120,15 @@ def main_ui():
     def show_page(button, other_button):
         if button['text'] == 'Home page':
             frame_home.lift()
-            frame_home.update()
         elif button['text'] == 'Setting':
             frame_setting.lift()
         else:
             frame_history.lift()
+
         button_setting(button, other_button)
 
     # 声明按钮们
-    home_button = tk.Button(toolBar_frame, text='Home page', bg='#2C3D55', width=13, anchor='c', font=14, fg='#0A8E8B')
+    home_button = tk.Button(toolBar_frame, text='Home page', bg='#01FAE7', width=13, anchor='c', font=14, )
     home_button.place(x=0, y=0)
 
     setting_button = tk.Button(toolBar_frame, text='Setting', bg='#2C3D55', width=13, anchor='c', font=14, fg='#0A8E8B')
@@ -114,7 +152,11 @@ def main_ui():
     frame_home.update()
 
     def close_app():
+        setting.STATUS_EB_END = True
+        setting.STATUS_HP_END = True
         stop_thread(setting.STATUS_T)
+        time.sleep(2.0)
+        setting.END = True
         print("[INFO] stop status thread...")
         root.destroy()
 

@@ -59,10 +59,10 @@ def eye_blinks_count(rect, gray, predictor):
         setting.COUNTER = 0
         # draw the total number of blinks on the frame along with
         # the computed eye aspect ratio for the frame
-    cv2.putText(setting.frame, "Blinks: {}".format(setting.TOTAL), (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-    cv2.putText(setting.frame, "EAR: {:.2f}".format(ear), (300, 30),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+    # cv2.putText(setting.frame, "Blinks: {}".format(setting.TOTAL), (10, 30),
+    #             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+    # cv2.putText(setting.frame, "EAR: {:.2f}".format(ear), (300, 30),
+    #             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
 
 def head_posture(rect, gray, predictor, size):
@@ -112,15 +112,27 @@ def head_posture(rect, gray, predictor, size):
     for p in image_points:
         cv2.circle(setting.frame, (int(p[0]), int(p[1])), 3, (0, 0, 255), -1)
 
-    p1 = (int(image_points[0][0]), int(image_points[0][1]))
-    p2 = (int(nose_end_point2D[0][0][0]), int(nose_end_point2D[0][0][1]))
+    if setting.translation_vector[1][0] < 300 and setting.translation_vector[1][0] > 0:
+        setting.HP_CODE = "Too close to the screen"
+    elif setting.translation_vector[1][0] >= 300 and setting.translation_vector[1][0] <= 600:
+        setting.HP_CODE = "Good distance"
+    elif setting.translation_vector[1][0] > 600:
+        setting.HP_CODE = "Too far to the screen"
+    elif setting.translation_vector[1][0] < 0:
+        setting.HP_CODE = "Please face the screen"
 
-    cv2.putText(setting.frame, "rotation: {}".format(setting.rotation_vector), (10, 60),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-    cv2.putText(setting.frame, "translation: {}".format(setting.translation_vector), (10, 90),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
-    cv2.line(setting.frame, p1, p2, (255, 0, 0), 2)
+
+        # p1 = (int(image_points[0][0]), int(image_points[0][1]))
+    # p2 = (int(nose_end_point2D[0][0][0]), int(nose_end_point2D[0][0][1]))
+
+
+    # cv2.putText(setting.frame, "rotation: {}".format(setting.rotation_vector), (10, 60),
+    #             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+    # cv2.putText(setting.frame, "translation: {}".format(setting.translation_vector), (10, 90),
+    #             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+    #
+    # cv2.line(setting.frame, p1, p2, (255, 0, 0), 2)
 
 
 def facedetection_background():
@@ -140,4 +152,8 @@ def facedetection_background():
         for rect in rects:
             eye_blinks_count(rect, gray, predictor)
             head_posture(rect, gray, predictor, size)
+
+        if setting.END:
+            break
+
     setting.vs.stop()
