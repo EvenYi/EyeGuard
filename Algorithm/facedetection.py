@@ -114,13 +114,13 @@ def head_posture(rect, gray, predictor, size):
         cv2.circle(setting.frame, (int(p[0]), int(p[1])), 3, (0, 0, 255), -1)
 
     if setting.translation_vector[1][0] < 300 and setting.translation_vector[1][0] > 0:
-        setting.HP_CODE = "Too close to the screen"
+        setting.HP_CODE = 1
     elif setting.translation_vector[1][0] >= 300 and setting.translation_vector[1][0] <= 600:
-        setting.HP_CODE = "Good distance"
+        setting.HP_CODE = 0
     elif setting.translation_vector[1][0] > 600:
-        setting.HP_CODE = "Too far to the screen"
+        setting.HP_CODE = 2
     elif setting.translation_vector[1][0] < 0:
-        setting.HP_CODE = "Please face the screen"
+        setting.HP_CODE = 3
 
 
 
@@ -158,4 +158,4 @@ def facedetection_background():
         if setting.END:
             break
 
-    setting.vs.stop()
+    print("[INFO] Stop face thread...")

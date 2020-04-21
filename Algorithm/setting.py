@@ -15,13 +15,14 @@ def init():
     global MUSIC_TYPE
     global IF_MUSIC
     global IF_POP
+    global STATUS_T_END
     
     
-    HP_CODE = " "
+    HP_CODE = 0
     END = False
     STATUS_HP_END = False
     STATUS_EB_END = False
-    STATUS_T = -1
+    STATUS_T_END = False
     STATUS_HP = -1
     STATUS_EB = -1
     COUNTER = 0
