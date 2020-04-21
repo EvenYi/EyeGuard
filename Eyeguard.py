@@ -5,7 +5,6 @@ sys.path.append(r'.\Behavior')
 sys.path.append(r'.\OperatingSystem')
 from imutils.video import VideoStream
 import threading
-import time
 import setting
 from facedetection import facedetection_background
 import MainUI
@@ -15,7 +14,7 @@ def main():
     # grab the indexes of the facial landmarks
 
     print("[INFO] Starting video stream thread...")
-    setting.vs = VideoStream(src=1).start()
+    setting.vs = VideoStream(src=setting.Camera).start()
     facedetection = threading.Thread(target=facedetection_background, name='Face')
     facedetection.start()
     MainUI.main_ui()

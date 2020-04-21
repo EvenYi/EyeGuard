@@ -2,19 +2,11 @@ from scipy.spatial import distance as dist
 import numpy as np
 from imutils import face_utils
 import imutils
-import time
 import dlib
 import cv2
 import setting
-import tkinter.messagebox
 
 
-# define two constants, one for the eye aspect ratio to indicate
-# blink and then a second constant for the number of consecutive
-# frames the eye must be below the threshold
-EYE_AR_THRESH = 0.2
-EYE_AR_CONSEC_FRAMES = 2
-# initialize the frame counters and the total number of blinks
 (lStart, lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
 (rStart, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
 
@@ -47,14 +39,14 @@ def eye_blinks_count(rect, gray, predictor):
     cv2.drawContours(setting.frame, [rightEyeHull], -1, (0, 255, 0), 1)
     # check to see if the eye aspect ratio is below the blink
     # threshold, and if so, increment the blink frame counter
-    if ear < EYE_AR_THRESH:
+    if ear < setting.EYE_AR_THRESH:
         setting.COUNTER += 1
     # otherwise, the eye aspect ratio is not below the blink
     # threshold
     else:
         # if the eyes were closed for a sufficient number of
         # then increment the total number of blinks
-        if setting.COUNTER >= EYE_AR_CONSEC_FRAMES:
+        if setting.COUNTER >= setting.EYE_AR_CONSEC_FRAMES:
             setting.TOTAL += 1
         # reset the eye frame counter
         setting.COUNTER = 0

@@ -16,7 +16,7 @@ def star_eyeguard(button):
     print("[INFO] Start eyeguard.")
     button.config(text='Stop', command=lambda: stop_eyeguard(button))
     if not setting.STATUS_EB_END:
-        setting.STATUS_EB = threading.Thread(target=eyefatigue_judgment, name='EyeBlinks')
+        setting.STATUS_EB = threading.Thread(target=eye_fatigue_judgment, name='EyeBlinks')
         setting.STATUS_EB.start()
     if not setting.STATUS_HP_END:
         setting.STATUS_HP = threading.Thread(target=head_posture_judgment, name='HeadPosture')
@@ -47,7 +47,7 @@ def tranfer_hp_code(hp_code):
     return posture
 
 
-def eyefatigue_judgment():
+def eye_fatigue_judgment():
     print("[INFO] Start eye fatigue judgment.")
     time_flag = True
     while not setting.STATUS_EB_END:
@@ -58,7 +58,7 @@ def eyefatigue_judgment():
                 break
             time.sleep(1)
         point_2 = setting.TOTAL
-        print("[INFO] Current eye blinks: " + str(point_2 - point_1))
+        print("[INFO] Current eye blinks: " + str(point_2 - point_1)+" ")
         if (point_2 - point_1) < 10 and time_flag:
             print("[INFO] Your eyes is fatigue")
             if setting.IF_POP == '1' and setting.IF_MUSIC == '0':
@@ -78,7 +78,7 @@ def head_posture_judgment():
     time_flag = True
     while not setting.STATUS_HP_END:
         for i in range(60):
-            if setting.STATUS_EB_END:
+            if setting.STATUS_HP_END:
                 time_flag = False
                 break
             time.sleep(1)
@@ -86,17 +86,10 @@ def head_posture_judgment():
         posture = tranfer_hp_code(setting.HP_CODE)
         if current_HP_CODE != 0 and time_flag:
             tkinter.messagebox.showinfo('Eyeguard', posture)
-            print("[INFO] Head posture: " + posture)
+            print("[INFO] Head posture: " + posture + ".")
 
     print("[INFO] Stop head posture judgment.")
-    setting.STATUS_EB_END = False
-
-
-def updating(v):
-    while not setting.STATUS_T_END:
-        posture = tranfer_hp_code(setting.HP_CODE)
-        v.set("Total Eye Blins: \n " + str(setting.TOTAL) + " \n " + "Head Posture: \n" + posture)
-    print("[INFO] Stop updating.")
+    setting.STATUS_HP_END = False
 
 
 def main_ui():
@@ -130,8 +123,14 @@ def main_ui():
     status_label = tk.Label(frame_home, height=15, width=18, bg='white', anchor='nw', textvariable=v)
     status_label.place(x=350, y=50)
 
+    def updating():
+        while not setting.STATUS_T_END:
+            posture = tranfer_hp_code(setting.HP_CODE)
+            v.set("Total Eye Blins: \n " + str(setting.TOTAL) + " \n " + "Head Posture: \n" + posture)
+        print("[INFO] Stop updating.")
+
     if not setting.STATUS_T_END:
-        setting.STATUS_T = threading.Thread(target=updating, args=(v,), name='Status')
+        setting.STATUS_T = threading.Thread(target=updating, name='Status')
         setting.STATUS_T.start()
 
     start_button = tk.Button(frame_home, width=10, height=2, bg='#01FAE7', text='Start', font=20,
@@ -180,10 +179,11 @@ def main_ui():
     frame_home.update()
 
     def close_app():
-        setting.END = True
+        setting.STATUS_T_END = True
         setting.STATUS_EB_END = True
         setting.STATUS_HP_END = True
-        setting.STATUS_T_END = True
+
+        setting.END = True
         time.sleep(0.5)
         root.destroy()
 
