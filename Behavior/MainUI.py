@@ -14,7 +14,7 @@ import tkinter.messagebox
 
 def star_eyeguard(button):
     print("[INFO] Start eyeguard.")
-    button.config(text='Stop', command=lambda: stop_eyeguard(button))
+    button.config(text='Stop', bg = 'red4', fg = 'white', command=lambda : stop_eyeguard(button))
     if not setting.STATUS_EB_END:
         setting.STATUS_EB = threading.Thread(target=eye_fatigue_judgment, name='EyeBlinks')
         setting.STATUS_EB.start()
@@ -28,7 +28,7 @@ def stop_eyeguard(button):
     setting.STATUS_EB_END = True
     setting.STATUS_HP_END = True
     time.sleep(0.5)
-    button.config(text='Start', command=lambda: star_eyeguard(button))
+    button.config(text = 'Start', bg = '#01FAE7', fg = 'black', command=lambda :star_eyeguard(button))
     time.sleep(2)
 
 
@@ -61,11 +61,11 @@ def eye_fatigue_judgment():
         print("[INFO] Current eye blinks: " + str(point_2 - point_1)+" ")
         if (point_2 - point_1) < 10 and time_flag:
             print("[INFO] Your eyes is fatigue")
-            if setting.IF_POP == '1' and setting.IF_MUSIC == '0':
+            if setting.IF_POP == 1 and setting.IF_MUSIC == 0:
                 tkinter.messagebox.showinfo('Eyeguard', 'You are tired. Go have some rests!')
-            elif setting.IF_POP == '0' and setting.IF_MUSIC == '1':
+            elif setting.IF_POP == 0 and setting.IF_MUSIC == 1:
                 playaudio()
-            elif setting.IF_POP == '1' and setting.IF_MUSIC == '1':
+            elif setting.IF_POP == 1 and setting.IF_MUSIC == 1:
                 tkinter.messagebox.showinfo('Eyeguard', 'You are tired. Go have some rests!')
                 playaudio()
 
@@ -120,9 +120,9 @@ def main_ui():
     frame_history = Pages.history_page_show(root)
 
     v = tk.StringVar()
-    status_label = tk.Label(frame_home, height=15, width=18, bg='white', anchor='nw', textvariable=v)
-    status_label.place(x=350, y=50)
 
+    status_label = tk.Label(frame_home, height=10, width=18, bg='white', anchor='c', textvariable=v)
+    status_label.place(x=350, y=80)
     def updating():
         while not setting.STATUS_T_END:
             posture = tranfer_hp_code(setting.HP_CODE)
@@ -133,8 +133,9 @@ def main_ui():
         setting.STATUS_T = threading.Thread(target=updating, name='Status')
         setting.STATUS_T.start()
 
-    start_button = tk.Button(frame_home, width=10, height=2, bg='#01FAE7', text='Start', font=20,
-                             command=lambda: star_eyeguard(start_button))
+
+
+    start_button = tk.Button(frame_home, width=10, height=1, bg='#01FAE7', text='Start', font=20, command=lambda :star_eyeguard(start_button))
     start_button.place(x=350, y=323)
 
     # 调选中或未选中整颜色的方法
@@ -163,6 +164,7 @@ def main_ui():
 
     history_button = tk.Button(toolBar_frame, text='History', bg='#2C3D55', width=13, anchor='c', font=14, fg='#0A8E8B')
     history_button.place(x=0, y=80)
+
 
     # 将方法塞进按钮
     home_button.config(command=lambda: show_page(home_button,

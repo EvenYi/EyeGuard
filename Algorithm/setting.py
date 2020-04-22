@@ -36,8 +36,8 @@ def init():
     cf = configparser.ConfigParser()
     cf.read('./config.ini', encoding='utf-8')
 
-    IF_POP = cf.get("Remind-Mode", "POP")
-    IF_MUSIC = cf.get("Remind-Mode", "MUSIC")
+    IF_POP = cf.get("Remind-Mode", "IF_POP")
+    IF_MUSIC = cf.get("Remind-Mode", "IF_MUSIC")
     MUSIC_TYPE = cf.get("Remind-Mode", "MUSIC_TYPE")
     EYE_AR_THRESH = cf.getfloat("Threshold", "EYE_AR_THRESH")
     EYE_AR_CONSEC_FRAMES = cf.getfloat("Threshold", "EYE_AR_CONSEC_FRAMES")
