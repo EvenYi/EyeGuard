@@ -24,5 +24,5 @@ def main():
     sys.exit(1)
 
 
-if __name__ == '__main__':  # 在win系统下必须要满足这个if条件
+if __name__ == '__main__':
     main()
