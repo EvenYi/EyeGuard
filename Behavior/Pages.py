@@ -48,7 +48,7 @@ def setting_page_show(root):
 
     pop_var = tk.IntVar()
     pop_var.set(setting.IF_POP)
-    mode_check_button = tk.Checkbutton(right_frame, text='Alert mode', bg='#2C3D55', fg='#01FAE7',
+    mode_check_button = tk.Checkbutton(right_frame, text='Pop Up prompt mode', bg='#2C3D55', fg='#01FAE7',
                                        activebackground='#2C3D55', font=20, var=pop_var)
     mode_check_button.place(x=13, y=40)
 
