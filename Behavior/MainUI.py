@@ -55,27 +55,29 @@ def eye_fatigue_judgment():
     print("[INFO] Start eye fatigue judgment.")
     time_flag = True
     while not setting.STATUS_EB_END:
-        point_1 = setting.TOTAL
-        for i in range(32):
-            if setting.STATUS_EB_END:
-                time_flag = False
-                break
-            time.sleep(1)
-        point_2 = setting.TOTAL
-        print("[INFO] Current eye blinks: " + str(point_2 - point_1) + " ")
-        if (point_2 - point_1) < 10 and time_flag:
-            print("[INFO] Your eyes is fatigue")
-            if setting.IF_POP == 1 and setting.IF_MUSIC == 0:
-                tkinter.messagebox.showinfo('Eyeguard', 'You are tired. Go have some rests!')
-            elif setting.IF_POP == 0 and setting.IF_MUSIC == 1:
-                if not setting.STATUS_AU_END:
-                    setting.STATUS_AU = threading.Thread(target=play_audio, name='Playaudio')
-                    setting.STATUS_AU.start()
-            elif setting.IF_POP == 1 and setting.IF_MUSIC == 1:
-                if not setting.STATUS_AU_END:
-                    setting.STATUS_AU = threading.Thread(target=play_audio, name='Playaudio')
-                    setting.STATUS_AU.start()
-                tkinter.messagebox.showinfo('Eyeguard', 'You are tired. Go have some rests!')
+        if setting.head_exist:
+            point_1 = setting.TOTAL
+            for i in range(32):
+                if setting.STATUS_EB_END:
+                    time_flag = False
+                    break
+                time.sleep(1)
+            point_2 = setting.TOTAL
+            print("[INFO] Current eye blinks: " + str(point_2 - point_1) + " ")
+            if (point_2 - point_1) < 10 and time_flag and setting.head_exist:
+                print("[INFO] Your eyes is fatigue")
+                if setting.IF_POP == 1 and setting.IF_MUSIC == 0:
+                    tkinter.messagebox.showinfo('Eyeguard', 'You are tired. Go have some rests!')
+                elif setting.IF_POP == 0 and setting.IF_MUSIC == 1:
+                    if not setting.STATUS_AU_END:
+                        setting.STATUS_AU = threading.Thread(target=play_audio, name='Playaudio')
+                        setting.STATUS_AU.start()
+                elif setting.IF_POP == 1 and setting.IF_MUSIC == 1:
+                    if not setting.STATUS_AU_END:
+                        setting.STATUS_AU = threading.Thread(target=play_audio, name='Playaudio')
+                        setting.STATUS_AU.start()
+                    tkinter.messagebox.showinfo('Eyeguard', 'You are tired. Go have some rests!')
+
 
     setting.STATUS_EB_END = False
     print("[INFO] Stop eye fatigue judgment.")
@@ -86,20 +88,22 @@ def head_posture_judgment():
     time_flag = True
     work_mode = setting.mode.get()
     if work_mode == 0:
-        span = 10
+        span = 300
     else:
         span = 60
     while not setting.STATUS_HP_END:
-        for i in range(span):
-            if setting.STATUS_HP_END:
-                time_flag = False
-                break
-            time.sleep(1)
-        current_HP_CODE = setting.HP_CODE
-        posture = tranfer_hp_code(setting.HP_CODE)
-        if current_HP_CODE != 0 and time_flag:
-            tkinter.messagebox.showinfo('Eyeguard', posture)
-            print("[INFO] Head posture: " + posture + ".")
+        if setting.head_exist:
+            for i in range(span):
+                if setting.STATUS_HP_END:
+                    time_flag = False
+                    break
+                time.sleep(1)
+            current_HP_CODE = setting.HP_CODE
+            posture = tranfer_hp_code(setting.HP_CODE)
+            if current_HP_CODE != 0 and time_flag and setting.head_exist:
+                tkinter.messagebox.showinfo('Eyeguard', posture)
+                print("[INFO] Head posture: " + posture + ".")
+
 
     print("[INFO] Stop head posture judgment.")
     setting.STATUS_HP_END = False

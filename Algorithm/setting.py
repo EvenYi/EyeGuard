@@ -26,6 +26,7 @@ def init():
     global Camera
     global work_mode
     global mode
+    global head_exist
 
     HP_CODE = 0
     END = False
@@ -37,6 +38,7 @@ def init():
     STATUS_EB = -1
     COUNTER = 0
     TOTAL = 0
+    head_exist = 0
 
     cf = configparser.ConfigParser()
     cf.read('./config.ini', encoding='utf-8')

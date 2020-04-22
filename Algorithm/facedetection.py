@@ -143,6 +143,11 @@ def facedetection_background():
         # detect faces in the grayscale frame
         rects = detector(gray, 0)
         size = setting.frame.shape
+        if len(rects)==0:
+            setting.head_exist = False
+        else:
+            setting.head_exist = True
+
         for rect in rects:
             eye_blinks_count(rect, gray, predictor)
             head_posture(rect, gray, predictor, size)
