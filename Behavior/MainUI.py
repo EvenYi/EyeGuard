@@ -89,15 +89,15 @@ def eye_fatigue_judgment():
                     break
                 time.sleep(1)
             point_2 = setting.TOTAL
+            span = time_span(32)
             if time_flag and setting.head_exist:
-                span = time_span(32)
                 eb_log = "[LOG] [" + span + "] Eye blinks: " + str(point_2 - point_1) + ".\n"
                 print(eb_log)
                 setting.history += eb_log
 
-            if (point_2 - point_1) < 10 and time_flag and setting.head_exist:
+            if (point_2 - point_1) <= 8 and time_flag and setting.head_exist:
                 print("[INFO] Your eyes is fatigue \n")
-                setting.history += "[INFO] Your eyes is fatigue \n"
+                setting.history += "[LOG] [" + span + "] Your eyes is fatigue \n"
                 if setting.IF_POP == 1 and setting.IF_MUSIC == 0:
                     tkinter.messagebox.showinfo('Eyeguard', 'You are tired. Go have some rests!')
                 elif setting.IF_POP == 0 and setting.IF_MUSIC == 1:
