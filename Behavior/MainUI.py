@@ -12,9 +12,27 @@ import time
 import tkinter.messagebox
 
 
+def time_span(span):
+    if span > 0:
+        now_stamp = int(time.time())
+        past_stamp = now_stamp - span
+        timeArray = time.localtime(now_stamp)
+        now_time = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
+        timeArray = time.localtime(past_stamp)
+        past_time = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
+        time_span = past_time + "-" + now_time
+        return time_span
+    else:
+        now_stamp = int(time.time())
+        timeArray = time.localtime(now_stamp)
+        now_time = time.strftime("%Y/%m/%d %H:%M:%S", timeArray)
+        return now_time
+
+
 def star_eyeguard(button):
     print("[INFO] Start eyeguard.")
-    setting.history = ''
+    star_log = "[LOG] [" + time_span(0) + "] Start eyeguard. \n"
+    setting.history += star_log
     setting.time_start = time.time()
     button.config(text='Stop', bg='red4', fg='white', command=lambda: stop_eyeguard(button))
     if not setting.STATUS_EB_END:
@@ -29,10 +47,10 @@ def stop_eyeguard(button):
     print("[INFO] Stop eyeguard.")
     setting.time_end = time.time()
     setting.history += ('You started at: ' + time.strftime('%H:%M:%S', time.localtime(setting.time_start)) + '\n' +
-                         'You end at: ' + time.strftime('%H:%M:%S', time.localtime(setting.time_end))+ '\n' +
-                         'Total usage time: ' + str(int(setting.time_end - setting.time_start) // 3600) + ' hours '+
-                         str(int(setting.time_end - setting.time_start) // 60) + ' minutes ' +
-                         str(int(setting.time_end - setting.time_start) % 60) + ' seconds')
+                        'You end at: ' + time.strftime('%H:%M:%S', time.localtime(setting.time_end)) + '\n' +
+                        'Total usage time: ' + str(int(setting.time_end - setting.time_start) // 3600) + ' hours ' +
+                        str(int(setting.time_end - setting.time_start) // 60) + ' minutes ' +
+                        str(int(setting.time_end - setting.time_start) % 60) + ' seconds')
     setting.STATUS_EB_END = True
     setting.STATUS_HP_END = True
     time.sleep(0.5)
@@ -71,9 +89,15 @@ def eye_fatigue_judgment():
                     break
                 time.sleep(1)
             point_2 = setting.TOTAL
-            print("[INFO] Current eye blinks: " + str(point_2 - point_1) + " ")
+            if time_flag and setting.head_exist:
+                span = time_span(32)
+                eb_log = "[LOG] [" + span + "] Eye blinks: " + str(point_2 - point_1) + ".\n"
+                print(eb_log)
+                setting.history += eb_log
+
             if (point_2 - point_1) < 10 and time_flag and setting.head_exist:
-                print("[INFO] Your eyes is fatigue")
+                print("[INFO] Your eyes is fatigue \n")
+                setting.history += "[INFO] Your eyes is fatigue \n"
                 if setting.IF_POP == 1 and setting.IF_MUSIC == 0:
                     tkinter.messagebox.showinfo('Eyeguard', 'You are tired. Go have some rests!')
                 elif setting.IF_POP == 0 and setting.IF_MUSIC == 1:
@@ -85,7 +109,6 @@ def eye_fatigue_judgment():
                         setting.STATUS_AU = threading.Thread(target=play_audio, name='Playaudio')
                         setting.STATUS_AU.start()
                     tkinter.messagebox.showinfo('Eyeguard', 'You are tired. Go have some rests!')
-
 
     setting.STATUS_EB_END = False
     print("[INFO] Stop eye fatigue judgment.")
@@ -108,10 +131,14 @@ def head_posture_judgment():
                 time.sleep(1)
             current_HP_CODE = setting.HP_CODE
             posture = tranfer_hp_code(setting.HP_CODE)
+            if time_flag and setting.head_exist:
+                time_point = time_span(0)
+                hp_log = "[LOG] [" + time_point + "] Head posture: " + posture + ".\n"
+                print(hp_log)
+                setting.history += hp_log
             if current_HP_CODE != 0 and time_flag and setting.head_exist:
                 tkinter.messagebox.showinfo('Eyeguard', posture)
                 print("[INFO] Head posture: " + posture + ".")
-
 
     print("[INFO] Stop head posture judgment.")
     setting.STATUS_HP_END = False
@@ -143,7 +170,6 @@ def main_ui():
     frame_home = Pages.home_page_show(root)
     frame_setting = Pages.setting_page_show(root)
 
-
     v = tk.StringVar()
 
     status_label = tk.Label(frame_home, height=10, width=18, bg='white', anchor='c', textvariable=v)
@@ -152,7 +178,7 @@ def main_ui():
     def updating():
         while not setting.STATUS_T_END:
             posture = tranfer_hp_code(setting.HP_CODE)
-            v.set("Total Eye Blins: \n " + str(setting.TOTAL) + " \n " + "Head Posture: \n" + posture)
+            v.set("Total Eye Blinks: \n " + str(setting.TOTAL) + " \n " + "Head Posture: \n" + posture)
         print("[INFO] Stop updating.")
 
     if not setting.STATUS_T_END:
@@ -186,7 +212,6 @@ def main_ui():
         elif button['text'] == 'Setting':
             frame_setting.lift()
         else:
-            # setting.history += ***********************************************************************
             frame_history = Pages.history_page_show(root)
             frame_history.lift()
 
