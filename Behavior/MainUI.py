@@ -29,7 +29,7 @@ def time_span(span):
         return now_time
 
 
-def star_eyeguard(button):
+def start_eyeguard(button):
     print("[INFO] Start eyeguard.")
     star_log = "[LOG] [" + time_span(0) + "] Start eyeguard. \n"
     setting.history += star_log
@@ -46,15 +46,13 @@ def star_eyeguard(button):
 def stop_eyeguard(button):
     print("[INFO] Stop eyeguard.")
     setting.time_end = time.time()
-    setting.history += ('You started at: ' + time.strftime('%H:%M:%S', time.localtime(setting.time_start)) + '\n' +
-                        'You end at: ' + time.strftime('%H:%M:%S', time.localtime(setting.time_end)) + '\n' +
-                        'Total usage time: ' + str(int(setting.time_end - setting.time_start) // 3600) + ' hours ' +
+    setting.history += ('[LOG] ['+ time_span(0) +'] Total usage: ' + str(int(setting.time_end - setting.time_start) // 3600) + ' hours ' +
                         str(int(setting.time_end - setting.time_start) // 60) + ' minutes ' +
                         str(int(setting.time_end - setting.time_start) % 60) + ' seconds')
     setting.STATUS_EB_END = True
     setting.STATUS_HP_END = True
     time.sleep(0.5)
-    button.config(text='Start', bg='#01FAE7', fg='black', command=lambda: star_eyeguard(button))
+    button.config(text='Start', bg='#01FAE7', fg='black', command=lambda: start_eyeguard(button))
     time.sleep(0.5)
 
 
@@ -196,7 +194,7 @@ def main_ui():
     radio_button2.place(x=200, y=320)
 
     start_button = tk.Button(frame_home, width=10, height=1, bg='#01FAE7', text='Start', font=20,
-                             command=lambda: star_eyeguard(start_button))
+                             command=lambda: start_eyeguard(start_button))
     start_button.place(x=350, y=323)
 
     # 调选中或未选中整颜色的方法
