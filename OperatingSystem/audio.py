@@ -1,3 +1,11 @@
+import sys
+
+sys.path.append(r'..\Algorithm')
 import playsound
-def playaudio():
-    playsound.playsound('./Montana.mp3', True)
+import setting
+
+
+def p_audio():
+    setting.STATUS_AU_END = True
+    playsound.playsound('./' + setting.MUSIC_TYPE + '.mp3', True)
+    setting.STATUS_AU_END = False

@@ -36,17 +36,6 @@ def home_page_show(root):
 
     show_frame()  # Display 2
 
-    mode = tk.StringVar()
-    mode.set(0)
-
-
-    radio_button1 = tk.Radiobutton(right_frame, text='Adult', bg='#2C3D55', fg='#01FAE7', activebackground='#2C3D55',
-                                   var=mode, value=0, font=20)
-    radio_button2 = tk.Radiobutton(right_frame, text='Teenager', bg='#2C3D55', fg='#01FAE7', activebackground='#2C3D55',
-                                   var=mode, value=1, font=20)
-    radio_button1.place(x=34, y=320)
-    radio_button2.place(x=200, y=320)
-
     label_status = tk.Label(right_frame, height=1, width=20, text='Current status', fg='#01FAE7', bg='#2C3D55', font=14,
                             anchor='w')
     label_status.place(x=350, y=30)
