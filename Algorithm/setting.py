@@ -27,6 +27,9 @@ def init():
     global work_mode
     global mode
     global head_exist
+    global time_start
+    global time_end
+    global history
 
     HP_CODE = 0
     END = False
@@ -39,6 +42,7 @@ def init():
     COUNTER = 0
     TOTAL = 0
     head_exist = 0
+    history = ''
 
     cf = configparser.ConfigParser()
     cf.read('./config.ini', encoding='utf-8')

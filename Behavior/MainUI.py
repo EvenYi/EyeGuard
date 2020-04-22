@@ -14,6 +14,8 @@ import tkinter.messagebox
 
 def star_eyeguard(button):
     print("[INFO] Start eyeguard.")
+    setting.history = ''
+    setting.time_start = time.time()
     button.config(text='Stop', bg='red4', fg='white', command=lambda: stop_eyeguard(button))
     if not setting.STATUS_EB_END:
         setting.STATUS_EB = threading.Thread(target=eye_fatigue_judgment, name='EyeBlinks')
@@ -25,6 +27,12 @@ def star_eyeguard(button):
 
 def stop_eyeguard(button):
     print("[INFO] Stop eyeguard.")
+    setting.time_end = time.time()
+    setting.history += ('You started at: ' + time.strftime('%H:%M:%S', time.localtime(setting.time_start)) + '\n' +
+                         'You end at: ' + time.strftime('%H:%M:%S', time.localtime(setting.time_end))+ '\n' +
+                         'Total usage time: ' + str(int(setting.time_end - setting.time_start) // 3600) + ' hours '+
+                         str(int(setting.time_end - setting.time_start) // 60) + ' minutes ' +
+                         str(int(setting.time_end - setting.time_start) % 60) + ' seconds')
     setting.STATUS_EB_END = True
     setting.STATUS_HP_END = True
     time.sleep(0.5)
@@ -134,7 +142,7 @@ def main_ui():
     # 加载三个页面
     frame_home = Pages.home_page_show(root)
     frame_setting = Pages.setting_page_show(root)
-    frame_history = Pages.history_page_show(root)
+
 
     v = tk.StringVar()
 
@@ -178,6 +186,8 @@ def main_ui():
         elif button['text'] == 'Setting':
             frame_setting.lift()
         else:
+            # setting.history += ***********************************************************************
+            frame_history = Pages.history_page_show(root)
             frame_history.lift()
 
         button_setting(button, other_button)

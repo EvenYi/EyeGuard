@@ -90,4 +90,6 @@ def setting_page_show(root):
 def history_page_show(root):
     right_frame = tk.Frame(root, bg='#2C3D55', width=490, height=400)
     right_frame.place(x=150, y=0)
+    history_label = tk.Label(right_frame, height = 22, width = 66, text = setting.history)
+    history_label.place(x=10, y = 10)
     return right_frame
