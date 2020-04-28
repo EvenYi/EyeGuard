@@ -1,7 +1,5 @@
 System Win10
 
-Click Eyeguard.exe to run Eyeguard.
-
 1.Can not open the webcamera?
 Try to change the camera = 0 in config.ini into 1 to switch the webcamera.
 
